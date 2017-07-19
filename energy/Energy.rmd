@@ -1,0 +1,70 @@
+---
+title: "Animal Waste"
+author: "Pranay"
+date: "7/19/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+# Animal waste production- it's impact and Numbers
+
+[Data Source](www.rstudio.com) 
+
+```{r echo=FALSE}
+for (package in c('tidyverse','ggthemes')) {
+  if (!require(package, character.only=T, quietly=T)) {
+    install.packages(package,repos="http://cran.us.r-project.org")
+    library(package, character.only=T)
+  }
+}
+
+my.theme <- theme(panel.background = element_blank())+
+  theme(plot.title = element_text(size=26, 
+                                  family="Trebuchet MS", 
+                                  face="bold", hjust=0, 
+                                  color="#666666")) +
+  theme(axis.title = element_text(size=18, family="Trebuchet MS", face="bold", color="#666666")) +
+  theme(axis.title.y = element_text(angle=0)) +
+  theme(axis.text.y = element_text(colour="black",size=20))+
+  theme(axis.text.x = element_text(colour="black",size=18))+
+  theme(plot.title = element_text(hjust = 0))+       
+  theme(legend.text=element_text(size=20))+
+  theme(plot.caption = element_text(size="10"))
+
+
+
+
+
+
+energy <- read.csv("UNdata_Export_20170719_113137747.csv")
+energy_us <- energy%>%
+  filter(Country.or.Area=="United States", Commodity...Transaction=="Animal waste - Production")%>%
+  arrange(Year)%>%
+  dplyr::mutate(diff =   Quantity-lag(Quantity), percent_diff = diff / lag(Quantity) * 100)
+
+
+ggplot(energy_us, aes(Year,Quantity)) +
+  geom_point(size=3) +
+  geom_line(size=1) +
+  labs(x = "Year",y = "Quantity Percentage Change",title="Quantity of Animal Waste production over Years")+ my.theme
+  theme_hc(base_size = 14) + 
+  labs(source ="Un Data")
+  scale_colour_manual(values=palette)
+  
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
